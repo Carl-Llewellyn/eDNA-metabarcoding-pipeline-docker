@@ -35,7 +35,8 @@ Usage:
 ```
 
 Behavior:
-- Creates/starts a persistent container `edna_session` (detached) and then execs into it.
+- Creates/starts a persistent container `edna_session` (detached).
+- If a TTY is available, it execs into the container; otherwise it exits after starting it.
 - Default host data dir: `/home/deegc@ENT/Documents/01_eDNA` -> `/opt/eDNA/01_eDNA`.
 - Default BLAST DB mount: `/data/blastdb` -> `/opt/eDNA/blastdb`.
 
@@ -43,7 +44,7 @@ Behavior:
 - The MEGAN installer is driven by piped `printf` responses during the Docker build to accept prompts and defaults.
 
 ## Changing BLAST DB and MEGAN locations
-- BLAST DB mount: edit `HOST_BLASTDB`/`CONTAINER_BLASTDB` in `run.sh` and `BLASTDB_HOST`/`BLASTDB_CONTAINER` in `setup_edna.sh`.
+- BLAST DB mount: use `--blastdb HOST[:CONTAINER]` on `run.sh`/`setup_edna.sh`, or edit `HOST_BLASTDB`/`CONTAINER_BLASTDB` in `run.sh` and `BLASTDB_HOST`/`BLASTDB_CONTAINER` in `setup_edna.sh`.
 - MEGAN install location: edit the `--prefix /opt/megan` argument in `dockerfile`, then rebuild.
 
 ## Defaults
