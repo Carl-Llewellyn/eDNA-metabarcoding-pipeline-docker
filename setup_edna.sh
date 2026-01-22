@@ -8,7 +8,7 @@
 #
 # Usage:
 #   ./setup_edna.sh build [--tag TAG] [--micromamba-file FILE] [--megan-file FILE] [--no-cache]
-#   ./setup_edna.sh run   [--tag TAG] [--micromamba-file FILE] [--mount HOST[:CONTAINER]] [--blastdb HOST[:CONTAINER]] [--megan-file FILE] [--no-cache]
+#   ./setup_edna.sh run   [--tag TAG] [--micromamba-file FILE] [--mount HOST[:CONTAINER]] [--blastdb HOST[:CONTAINER]] [--blastdb-env VALUE] [--megan-file FILE] [--no-cache]
 #   ./setup_edna.sh build-and-run ...
 #
 # Examples:
@@ -27,6 +27,7 @@ ACTION=""
 BLASTDB_HOST="/data/blastdb"
 BLASTDB_CONTAINER="/opt/eDNA/blastdb"
 BLASTDB_MOUNT=""
+BLASTDB_ENV="/opt/eDNA/blastdb/ntdatabase:/opt/eDNA/blastdb/IYS_APC"
 
 print_usage() {
   cat <<EOF
@@ -41,6 +42,7 @@ Options:
                             If HOST:CONTAINER is provided, the provided container path will be used,
                             but mounting directly over /opt/eDNA is refused to avoid hiding repo.
   --blastdb HOST[:CONTAINER] Host BLAST DB path to mount (default: /data/blastdb -> /opt/eDNA/blastdb)
+  --blastdb-env VALUE        BLASTDB env value (default: ${BLASTDB_ENV})
   --no-cache               Pass --no-cache to docker build (force fresh build)
 EOF
   exit 1
@@ -56,6 +58,7 @@ while [ $# -gt 0 ]; do
     --megan-file) MEGAN_INSTALLER_FILE="$2"; shift 2;;
     --mount) MOUNT="$2"; shift 2;;
     --blastdb) BLASTDB_MOUNT="$2"; shift 2;;
+    --blastdb-env) BLASTDB_ENV="$2"; shift 2;;
     --no-cache) NO_CACHE=1; shift;;
     -h|--help) print_usage;;
     *) echo "Unknown arg: $1"; print_usage;;
@@ -146,7 +149,7 @@ run_container() {
   fi
 
   echo "Running container from image ${TAG}"
-  RUN_ARGS=(--rm -it)
+  RUN_ARGS=(--rm -it -e "BLASTDB=${BLASTDB_ENV}")
   if [ ${#MOUNT_ARG[@]} -gt 0 ]; then
     RUN_ARGS+=("${MOUNT_ARG[@]}")
     echo "Mounting host -> container: ${MOUNT_ARG[*]}"

@@ -22,16 +22,18 @@ HOST_DATA="/home/deegc@ENT/Documents/01_eDNA"
 CONTAINER_DATA="/opt/eDNA/01_eDNA"
 HOST_BLASTDB="/data/blastdb"
 CONTAINER_BLASTDB="/opt/eDNA/blastdb"
+BLASTDB_ENV="/opt/eDNA/blastdb/ntdatabase:/opt/eDNA/blastdb/IYS_APC"
 BLASTDB_MOUNT=""
 WORKDIR="/opt/eDNA"
 
 print_usage() {
   cat <<EOF
-Usage: $0 [--data HOST[:CONTAINER]] [--blastdb HOST[:CONTAINER]] [HOST_DATA_DIR]
+Usage: $0 [--data HOST[:CONTAINER]] [--blastdb HOST[:CONTAINER]] [--blastdb-env VALUE] [HOST_DATA_DIR]
 
 Options:
   --data HOST[:CONTAINER]    Host data path to mount (default: ${HOST_DATA} -> ${CONTAINER_DATA})
   --blastdb HOST[:CONTAINER] Host BLAST DB path to mount (default: ${HOST_BLASTDB} -> ${CONTAINER_BLASTDB})
+  --blastdb-env VALUE        BLASTDB env value (default: ${BLASTDB_ENV})
 EOF
   exit 1
 }
@@ -43,6 +45,8 @@ while [ $# -gt 0 ]; do
       HOST_DATA="$2"; HOST_DATA_SET=1; shift 2;;
     --blastdb)
       BLASTDB_MOUNT="$2"; shift 2;;
+    --blastdb-env)
+      BLASTDB_ENV="$2"; shift 2;;
     -h|--help)
       print_usage;;
     *)
@@ -101,6 +105,7 @@ if ! container_exists; then
     --name "${CONTAINER_NAME}" \
     -v "${HOST_DATA}:${CONTAINER_DATA}" \
     -v "${HOST_BLASTDB}:${CONTAINER_BLASTDB}" \
+    -e "BLASTDB=${BLASTDB_ENV}" \
     -w "${WORKDIR}" \
     --restart unless-stopped \
     "${IMAGE_NAME}" \

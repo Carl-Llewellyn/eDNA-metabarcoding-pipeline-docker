@@ -13,6 +13,7 @@ Set up for: https://github.com/ViralChris/eDNA_metabarcoding_pipeline_V2
 
 ## Changing BLAST DB and MEGAN locations
 - BLAST DB mount: use `--blastdb HOST[:CONTAINER]` on `run.sh`/`setup_edna.sh`, or edit `HOST_BLASTDB`/`CONTAINER_BLASTDB` in `run.sh` and `BLASTDB_HOST`/`BLASTDB_CONTAINER` in `setup_edna.sh`.
+- BLASTDB env: use `--blastdb-env VALUE` on `run.sh`/`setup_edna.sh`, or edit `BLASTDB_ENV` in those scripts.
 - MEGAN install location: edit the `--prefix /opt/megan` argument in `dockerfile`, then rebuild.
 
 ## Defaults
@@ -21,6 +22,7 @@ Set up for: https://github.com/ViralChris/eDNA_metabarcoding_pipeline_V2
 - MEGAN installs to `/opt/megan` and is on `PATH`.
 - Image tag: `edna_pipeline:latest`
 - Container name: `edna_session`
+- BLASTDB env: `/opt/eDNA/blastdb/ntdatabase:/opt/eDNA/blastdb/IYS_APC`
 
 ## Script flags
 
@@ -28,7 +30,7 @@ Set up for: https://github.com/ViralChris/eDNA_metabarcoding_pipeline_V2
 Usage:
 ```
 ./setup_edna.sh build [--tag TAG] [--micromamba-file FILE] [--megan-file FILE] [--no-cache]
-./setup_edna.sh run   [--tag TAG] [--micromamba-file FILE] [--mount HOST[:CONTAINER]] [--blastdb HOST[:CONTAINER]] [--megan-file FILE] [--no-cache]
+./setup_edna.sh run   [--tag TAG] [--micromamba-file FILE] [--mount HOST[:CONTAINER]] [--blastdb HOST[:CONTAINER]] [--blastdb-env VALUE] [--megan-file FILE] [--no-cache]
 ./setup_edna.sh build-and-run ...
 ```
 
@@ -38,12 +40,13 @@ Flags:
 - `--megan-file FILE` MEGAN installer `.sh` filename in build context (default: `MEGAN_Community_unix_6_25_10.sh`).
 - `--mount HOST[:CONTAINER]` Host path to mount; if only HOST is provided, it mounts to `/opt/eDNA/01_eDNA`. Mounting over `/opt/eDNA` is blocked.
 - `--blastdb HOST[:CONTAINER]` Host BLAST DB path to mount (default: `/data/blastdb` -> `/opt/eDNA/blastdb`).
+- `--blastdb-env VALUE` BLASTDB env value (default: `/opt/eDNA/blastdb/ntdatabase:/opt/eDNA/blastdb/IYS_APC`).
 - `--no-cache` Force a fresh Docker build.
 
 ### run.sh
 Usage:
 ```
-./run.sh [--data HOST[:CONTAINER]] [--blastdb HOST[:CONTAINER]] [HOST_DATA_DIR]
+./run.sh [--data HOST[:CONTAINER]] [--blastdb HOST[:CONTAINER]] [--blastdb-env VALUE] [HOST_DATA_DIR]
 ```
 
 Behavior:

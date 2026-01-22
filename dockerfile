@@ -123,6 +123,7 @@ RUN if [ -z "$MEGAN_INSTALLER_FILE" ]; then \
     rm -f /tmp/megan_installer.sh
 
 ENV PATH=/opt/megan/bin:/opt/conda/envs/edna/bin:$PATH
+ENV BLASTDB=/opt/eDNA/blastdb/ntdatabase:/opt/eDNA/blastdb/IYS_APC
 
 # Final smoke checks (non-fatal) using micromamba run to avoid relying on conda shell state.
 RUN bash -lc "\
