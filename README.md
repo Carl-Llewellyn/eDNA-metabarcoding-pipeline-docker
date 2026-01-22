@@ -8,7 +8,19 @@ Set up for: https://github.com/ViralChris/eDNA_metabarcoding_pipeline_V2
 - Place `micromamba-2.4.0-1.tar.bz2` and `MEGAN_Community_unix_6_25_10.sh` in this directory.
 - Build: `./setup_edna.sh build`
 - Run (interactive): `./setup_edna.sh run`
-- Persistent container: `./run.sh` (or just use the docker commands)
+- Persistent container: `./run.sh` (or just use your own docker commands)
+- Rebuild (clean): `./delete_and_rebuild_container.sh`
+
+## Changing BLAST DB and MEGAN locations
+- BLAST DB mount: use `--blastdb HOST[:CONTAINER]` on `run.sh`/`setup_edna.sh`, or edit `HOST_BLASTDB`/`CONTAINER_BLASTDB` in `run.sh` and `BLASTDB_HOST`/`BLASTDB_CONTAINER` in `setup_edna.sh`.
+- MEGAN install location: edit the `--prefix /opt/megan` argument in `dockerfile`, then rebuild.
+
+## Defaults
+- Host data mount: `/home/deegc@ENT/Documents/01_eDNA` -> `/opt/eDNA/01_eDNA`
+- BLAST DB mount: `/data/blastdb` -> `/opt/eDNA/blastdb`
+- MEGAN installs to `/opt/megan` and is on `PATH`.
+- Image tag: `edna_pipeline:latest`
+- Container name: `edna_session`
 
 ## Script flags
 
@@ -42,15 +54,6 @@ Behavior:
 
 ## MEGAN install automation
 - The MEGAN installer is driven by piped `printf` responses during the Docker build to accept prompts and defaults.
-
-## Changing BLAST DB and MEGAN locations
-- BLAST DB mount: use `--blastdb HOST[:CONTAINER]` on `run.sh`/`setup_edna.sh`, or edit `HOST_BLASTDB`/`CONTAINER_BLASTDB` in `run.sh` and `BLASTDB_HOST`/`BLASTDB_CONTAINER` in `setup_edna.sh`.
-- MEGAN install location: edit the `--prefix /opt/megan` argument in `dockerfile`, then rebuild.
-
-## Defaults
-- Host data mount: `/home/deegc@ENT/Documents/01_eDNA` -> `/opt/eDNA/01_eDNA`
-- BLAST DB mount: `/data/blastdb` -> `/opt/eDNA/blastdb`
-- MEGAN installs to `/opt/megan` and is on `PATH`.
 
 ## Python/R
 - Python 3 env: `edna`
